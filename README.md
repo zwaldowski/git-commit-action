@@ -1,114 +1,35 @@
+# Lightweight Git Commit Action
 
-<p align="center">
-  <a href="https://github.com/actions/javascript-action"><img alt="GitHub Actions status" src="https://github.com/actions/javascript-action/workflows/test-local/badge.svg"></a>
-</p>
+This action creates a Git commit from any changes made from the other steps in an action. Great for shipping docs to GitHub Pages. Paired with something to push the resulting commit, like ad-m/github-push-action, or something to tag, like zwaldowski/semver-release-action.
 
-# Create a JavaScript Action
+## Inputs
 
-Use this template to bootstrap the creation of a JavaScript action.:rocket:
+### `working_directory`
 
-This template includes tests, linting, a validation workflow, publishing, and versioning guidance.  
+**Optional** The directory to perform all operations in. Defaults to the repository root.
 
-If you are new, there's also a simpler introduction.  See the [Hello World JavaScript Action](https://github.com/actions/hello-world-javascript-action)
+### `commit_message`
 
-## Create an action from this template
+**Optional** A specific message to use for the commit.
 
-Click the `Use this Template` and provide the new repo details for your action
+### `author_name`
 
-## Code in Master
+**Optional** A name to assign as the author of the commit.
 
-Install the dependencies  
-```bash
-$ npm install
-```
+### `author_email`
 
-Run the tests :heavy_check_mark:  
-```bash
-$ npm test
+**Optional** An email address to assign as the author of the commit.
 
- PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
+## Outputs
 
-...
-```
+### `sha`
 
-## Change action.yml
+The commit hash for the created commit. Use to create a ref pointing specifically to this new commit.
 
-The action.yml contains defines the inputs and output for your action.
-
-Update the action.yml with your name, description, inputs and outputs for your action.
-
-See the [documentation](https://help.github.com/en/articles/metadata-syntax-for-github-actions)
-
-## Change the Code
-
-Most toolkit and CI/CD operations involve async operations so the action is run in an async function.
-
-```javascript
-const core = require('@actions/core');
-...
-
-async function run() {
-  try { 
-      ...
-  } 
-  catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-run()
-```
-
-See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
-
-## Package for distribution
-
-GitHub Actions will run the entry point from the action.yml. Packaging assembles the code into one file that can be checked in to Git, enabling fast and reliable execution and preventing the need to check in node_modules.
-
-Actions are run from GitHub repos.  Packaging the action will create a packaged action in the dist folder.
-
-Run package
-
-```bash
-npm run package
-```
-
-Since the packaged index.js is run from the dist folder.
-
-```bash
-git add dist
-```
-
-## Create a release branch
-
-Users shouldn't consume the action from master since that would be latest code and actions can break compatibility between major versions.
-
-Checkin to the v1 release branch
-
-```bash
-$ git checkout -b v1
-$ git commit -a -m "v1 release"
-```
-
-```bash
-$ git push origin v1
-```
-
-Your action is now published! :rocket: 
-
-See the [versioning documentation](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-
-## Usage
-
-You can now consume the action by referencing the v1 branch
+## Example usage
 
 ```yaml
-uses: actions/javascript-action@v1
-with:
-  milliseconds: 1000
+- id: git_commit
+  uses: zwaldowski/git-commit-action@v1
+- run: echo "${{ steps.git_commit.outputs.sha }}"
 ```
-
-See the [actions tab](https://github.com/actions/javascript-action/actions) for runs of this action! :rocket:

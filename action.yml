@@ -1,13 +1,24 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: Git commit
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
+  working_directory:
+    description: Directory to create commit in
+    required: false
+    default: .
+  commit_message:
+    description: Commit message
     required: true
-    default: '1000'
+    default: Automated commit
+  author_name:
+    description: Name to use for commit author
+    required: false
+    default: GitHub Actions
+  author_email:
+    description: Email to use for commit author
+    required: false
+    default: actions@github.com
 outputs:
-  time: # output will be available to future steps 
-    description: 'The message to output'
+  sha:
+    description: Hash of created commit
 runs:
   using: 'node12'
   main: 'dist/index.js'

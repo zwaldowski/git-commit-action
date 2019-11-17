@@ -1,21 +1,24 @@
-const core = require('@actions/core');
-const wait = require('./wait');
+const core = require('@actions/core')
+const { exec } = require('@actions/exec')
 
-
-// most @actions toolkit packages have async methods
 async function run() {
-  try { 
-    const ms = core.getInput('milliseconds');
-    console.log(`Waiting ${ms} milliseconds ...`)
-
-    core.debug((new Date()).toTimeString())
-    wait(parseInt(ms));
-    core.debug((new Date()).toTimeString())
-
-    core.setOutput('time', new Date().toTimeString());
-  } 
-  catch (error) {
-    core.setFailed(error.message);
+  try {
+    const workingDirectory = core.getInput('working_directory')
+    const commitMessage = core.getInput('commit_message')
+    const authorName = core.getInput('author_name')
+    const authorEmail = core.getInput('author_email')
+    var sha = ''
+    
+    await exec('git', [ '-C', workingDirectory, 'init' ])
+    await exec('git', [ '-C', workingDirectory, 'add', '-A' ])
+    await exec('git', [ '-C', workingDirectory, 'config', '--local', 'user.name', authorName ])
+    await exec('git', [ '-C', workingDirectory, 'config', '--local', 'user.email', authorEmail ])
+    await exec('git', [ '-C', workingDirectory, 'commit', '--no-verify', '-m', commitMessage ])
+    await exec('git', [ '-C', workingDirectory, 'rev-parse', 'HEAD' ], { listeners: { stdout: buffer => sha += buffer.toString() }})
+    
+    core.setOutput('sha', sha)
+  } catch (error) {
+    core.setFailed(error.message)
   }
 }
 
