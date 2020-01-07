@@ -1,4 +1,5 @@
-name: Git commit
+name: Simple commit
+description: Create an automated commit, initializing Git if needed.
 inputs:
   working_directory:
     description: Directory to create commit in
@@ -22,3 +23,6 @@ outputs:
 runs:
   using: 'node12'
   main: 'dist/index.js'
+branding:
+  icon: 'git-commit'
+  color: 'green'
